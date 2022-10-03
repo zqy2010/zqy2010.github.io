@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="素数的定义 素数，又称质数，是当一个大于1的正整数x，对于任意一个严格小于它且大于1的自然数a,都不会被a整除。即 \[ \large{\forall 1 &lt; a &lt; x 且 a 与 x \in \mathbb{N^{+}}  ,x \bmod a \ne 0} \] 我们则称x为素数。 试除法 既然已经知道了素数的定义，那要怎么来判断素数呢？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈OI中的素数判定和筛法">
+<meta property="og:url" content="http://example.com/2022/08/04/%E6%B5%85%E8%B0%88OI%E4%B8%AD%E7%9A%84%E7%B4%A0%E6%95%B0%E5%88%A4%E5%AE%9A%E5%92%8C%E7%AD%9B%E6%B3%95/index.html">
+<meta property="og:site_name" content="企鹅君的Blog">
+<meta property="og:description" content="素数的定义 素数，又称质数，是当一个大于1的正整数x，对于任意一个严格小于它且大于1的自然数a,都不会被a整除。即 \[ \large{\forall 1 &lt; a &lt; x 且 a 与 x \in \mathbb{N^{+}}  ,x \bmod a \ne 0} \] 我们则称x为素数。 试除法 既然已经知道了素数的定义，那要怎么来判断素数呢？">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-04T07:26:41.000Z">
+<meta property="article:modified_time" content="2022-10-03T05:44:27.559Z">
+<meta property="article:author" content="企鹅君">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="数学">
+<meta property="article:tag" content="筛法">
+<meta property="article:tag" content="素数">
+<meta property="article:tag" content="概率算法">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/08/04/%E6%B5%85%E8%B0%88OI%E4%B8%AD%E7%9A%84%E7%B4%A0%E6%95%B0%E5%88%A4%E5%AE%9A%E5%92%8C%E7%AD%9B%E6%B3%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/08/04/%E6%B5%85%E8%B0%88OI%E4%B8%AD%E7%9A%84%E7%B4%A0%E6%95%B0%E5%88%A4%E5%AE%9A%E5%92%8C%E7%AD%9B%E6%B3%95/","path":"2022/08/04/浅谈OI中的素数判定和筛法/","title":"浅谈OI中的素数判定和筛法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>浅谈OI中的素数判定和筛法 | 企鹅君的Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">企鹅君的Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">代码，算法与数据结构</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A0%E6%95%B0%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text">素数的定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%95%E9%99%A4%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">试除法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%83%E5%8F%8A%E7%AD%9B%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">埃及筛法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%822n%E5%86%85%E7%9A%84%E6%89%80%E6%9C%89%E7%B4%A0%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">求[2,n]内的所有素数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%82ab%E5%86%85%E7%9A%84%E6%89%80%E6%9C%89%E7%B4%A0%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">求[a,b]内的所有素数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AC%A7%E6%8B%89%E7%AD%9B%E7%BA%BF%E6%80%A7%E7%AD%9B"><span class="nav-number">4.</span> <span class="nav-text">欧拉筛（线性筛）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E5%A4%A7%E7%B4%A0%E6%95%B0%E7%9A%84%E5%88%A4%E5%AE%9A"><span class="nav-number">5.</span> <span class="nav-text">特大素数的判定</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">企鹅君</p>
+  <div class="site-description" itemprop="description">一个OIer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/04/%E6%B5%85%E8%B0%88OI%E4%B8%AD%E7%9A%84%E7%B4%A0%E6%95%B0%E5%88%A4%E5%AE%9A%E5%92%8C%E7%AD%9B%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="企鹅君">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="企鹅君的Blog">
+      <meta itemprop="description" content="一个OIer">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="浅谈OI中的素数判定和筛法 | 企鹅君的Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浅谈OI中的素数判定和筛法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-04 15:26:41" itemprop="dateCreated datePublished" datetime="2022-08-04T15:26:41+08:00">2022-08-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-10-03 13:44:27" itemprop="dateModified" datetime="2022-10-03T13:44:27+08:00">2022-10-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/OI/" itemprop="url" rel="index"><span itemprop="name">OI</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/OI/%E6%95%B0%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">数论</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="素数的定义">素数的定义</h1>
+<p>素数，又称质数，是当一个大于1的正整数x，对于任意一个严格小于它且大于1的自然数a,都不会被a整除。即</p>
+<p><span class="math display">\[
+\large{\forall 1 &lt; a &lt; x 且 a 与 x \in \mathbb{N^{+}}  ,x \bmod a \ne 0}
+\]</span> 我们则称x为素数。</p>
+<h1 id="试除法">试除法</h1>
+<p>既然已经知道了素数的定义，那要怎么来判断素数呢？</p>
+<span id="more"></span>
+<p>最简单的，也是最直接的，是按照定义判断素数，即试除法。回顾第<span class="math inline">\(0\)</span>节，如果我们要判断x是不是素数，只需<strong>照着定义</strong>，一个一个地看。很简单，直接贴代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">Is_prime</span><span class="params">(<span class="type">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(x&lt;=<span class="number">1</span>)<span class="comment">//不符合定义</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">2</span>;i&lt;x;i++)</span><br><span class="line">		<span class="keyword">if</span>(x%i==<span class="number">0</span>)<span class="comment">//会被整除</span></span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;<span class="comment">//全部符合</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为<span class="math inline">\(O(n)\)</span>。那能不能优化呢？答案是肯定的。只要把循环条件 <code>i&lt;x</code>改成<code>i*i&lt;=x</code> 即可，时间复杂度瞬间降至<span class="math inline">\(O(\sqrt{n})\)</span>。</p>
+<p>为什么呢？因为任意一个数<span class="math inline">\(a\)</span>，如果大于<span class="math inline">\(\sqrt{x}\)</span>，那么如果它<strong>可以整除<span class="math inline">\(x\)</span></strong>，那么一定有一个比它小的数<span class="math inline">\({\frac{x}{a}}\)</span><strong>也可以整除<span class="math inline">\(x\)</span></strong>，在之前已经试过了，早就退出了。如果程序运行到这里（即<code>i</code>大于<code>x</code>的开方），说明<strong>肯定没有别的数可以整除它</strong>了，可以直接退出循环。至于为什么要改成<strong>小于等于</strong>，因为如果它是一个<strong>完全平方数</strong>，可能只有它的开方可以整除它，必须要试。</p>
+<p>等等，还有一个优化大项。这一点不是用数论知识，而是用经验实现。自从读了小学，我们就知道个位是<span class="math inline">\(0\)</span>、<span class="math inline">\(2\)</span>、<span class="math inline">\(4\)</span>、<span class="math inline">\(6\)</span>、<span class="math inline">\(8\)</span>的数是<span class="math inline">\(2\)</span>的倍数，个位是<span class="math inline">\(0\)</span>、<span class="math inline">\(5\)</span>的数是<span class="math inline">\(5\)</span>的倍数。根据这一点，我们就可以写出一个判断条件：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> j=x%<span class="number">10</span>;</span><br><span class="line"><span class="keyword">if</span>((j==<span class="number">0</span>||j==<span class="number">4</span>||j==<span class="number">6</span>||j==<span class="number">8</span>)||(x&gt;<span class="number">9</span>&amp;&amp;(j==<span class="number">2</span>||j==<span class="number">5</span>)))</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;<span class="comment">//不是素数</span></span><br></pre></td></tr></table></figure>
+<p>这只是一个<del>奇妓淫巧</del>小优化，但可以大大提高运行速度。</p>
+<h1 id="埃及筛法">埃及筛法</h1>
+<h2 id="求2n内的所有素数">求[2,n]内的所有素数</h2>
+<p>虽然试除法在判断单个数的时候比较高效，但如果“批量处理”，比如<strong>求<span class="math inline">\([2，n]\)</span>内的所有素数</strong>。如果用试除法，实在太慢了。</p>
+<p>埃及筛法是一种古老而又简单的方法，可以快速找出<span class="math inline">\([2,n]\)</span>内所有素数。它相当于淘汰赛，一开始队列中<strong>有<span class="math inline">\([2，n]\)</span>内所有正整数</strong>。接下来，依次取出队列中的第一个元素，把<strong>队列中所有可以被它整除的数筛掉</strong>，以此类推，直到队列为空。此时所有素数<strong>都在取出来的元素中</strong>了。但实际实现中，我们用数组标记素数。代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> MAXN=<span class="number">1e7</span>;<span class="comment">//定义空间大小，这个数据规模约10MB</span></span><br><span class="line"><span class="type">int</span> prime[MAXN+<span class="number">5</span>];<span class="comment">//存放素数</span></span><br><span class="line"><span class="type">bool</span> visit[MAXN+<span class="number">5</span>];<span class="comment">//记录素数，false代表是素数</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">E_sieve</span><span class="params">(<span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> k=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;=n;i++)<span class="comment">//初始化</span></span><br><span class="line">    	visit[i]=<span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">2</span>;i*i&lt;=n;i++)<span class="comment">//i*i与试除法同理</span></span><br><span class="line">		<span class="keyword">if</span>(!visit[i])</span><br><span class="line">		&#123;</span><br><span class="line">			prime[k++]=i;<span class="comment">//存下素数</span></span><br><span class="line">			<span class="keyword">for</span>(<span class="type">int</span> j=i*i;j&lt;=n;j+=i)<span class="comment">//i的倍数不是素数，i*i因为之前的都被筛掉了。</span></span><br><span class="line">            	visit[j]=<span class="literal">true</span>;<span class="comment">//筛掉</span></span><br><span class="line">		&#125;</span><br><span class="line">    <span class="keyword">return</span> k;<span class="comment">//返回素数个数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度：2的倍数被筛掉，循环<span class="math inline">\(n \div 2\)</span>次；3的倍数被筛掉，循环<span class="math inline">\(n \div 3\)</span>次；5的倍数被筛掉，循环<span class="math inline">\(n \div 5\)</span>次......以此类推，总次数为 <span class="math display">\[
+O(\frac{n}{2}+\frac{n}{3}+\frac{n}{5}+...+\frac{n}{\sqrt{n}})
+\]</span> 化简可得<span class="math inline">\(O(n \log \log n)\)</span>（具体不作说明）。</p>
+<p>空间复杂度：如果只用<code>visit</code>数组，当<code>MAXN</code>等与 <span class="math inline">\(10^7\)</span>时约 10 MiB 。一般题目会限制空间为 65 MiB ,所以<strong><code>n</code>不可以再大了</strong>。</p>
+<h2 id="求ab内的所有素数">求[a,b]内的所有素数</h2>
+<p>我们来看一下，如果问题<strong>不要</strong>我们求 <span class="math inline">\([2,a)\)</span> 内的所有素数，而是求<span class="math inline">\([a,b]\)</span>,比如范围是<span class="math inline">\(a&lt;b&lt;=10^{12},b-a&lt;=10^{6}\)</span>,<strong>正好超过</strong>了<span class="math inline">\([2,n]\)</span>方法可以解决的范围，那怎么办呢？这就要用到<strong>大区间素数的计算</strong>了。</p>
+<p>前文提到，用试除法判断n是不是素数，原理为：如果<strong>它不能整除 <span class="math inline">\([2 , \sqrt{n}]\)</span> 内的所有素数，他就是素数</strong>。根据埃及筛法更容易理解此原理：<span class="math inline">\([2,\sqrt{n}]\)</span>内的非合数<span class="math inline">\(b\)</span>肯定对应了一个比它小的素数<span class="math inline">\(a\)</span>。再用试除法的时候，如果<span class="math inline">\(n\)</span>能整除<span class="math inline">\(a\)</span>，已经证明了<span class="math inline">\(n\)</span>不是素数，<span class="math inline">\(b\)</span>就不用再试了。<strong>也就是说，一个合数，一定有一个可以整除它的素数比它的开方小，我们只要筛出2~它的开方内的素数即可判断它是不是素数</strong>。</p>
+<p>此原理可以用来理解大区间素数问题。先用<strong>埃及筛法求<span class="math inline">\([2,\sqrt{b}]\)</span>内的素数</strong>，然后用这些素数来<strong>筛<span class="math inline">\([a,b]\)</span>区间内的素数</strong>即可。代码几乎就是两段埃及筛。</p>
+<p>时间复杂度：<span class="math inline">\(O(\sqrt{b}\log\log \sqrt{b}+(b-a)\sqrt{b-a})\)</span></p>
+<p>空间复杂度：<span class="math inline">\(O(\sqrt{b}+(b-a))\)</span></p>
+<p>埃及筛法不错，但做了一些无用功：<strong>某个数会被筛好几次</strong>。比如<span class="math inline">\(12\)</span>，会被<span class="math inline">\(2\)</span>和<span class="math inline">\(3\)</span>筛两次。尽管如此，一般情况下，埃及筛法也够用了。</p>
+<h1 id="欧拉筛线性筛">欧拉筛（线性筛）</h1>
+<p>下面就是目前最快的欧拉筛了！！！二话不说，先贴代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> maxn=<span class="number">101</span>;<span class="comment">//表长</span></span><br><span class="line"><span class="type">int</span> prime[maxn],pNum=<span class="number">0</span>;<span class="comment">//prime记录素数，pNum记录素数个数</span></span><br><span class="line"><span class="type">bool</span> p[maxn]=&#123;<span class="literal">false</span>&#125;;<span class="comment">//p记录当前数是否被筛去</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">eulerSieve</span><span class="params">(<span class="type">int</span> n)</span><span class="comment">//查找记录2-n的素数</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">2</span>;i&lt;=n;i++)</span><br><span class="line">    &#123;</span><br><span class="line">    	cout&lt;&lt;<span class="string">&quot; i = &quot;</span>&lt;&lt;i&lt;&lt;endl;</span><br><span class="line">        <span class="keyword">if</span> (!p[i])<span class="comment">//如果未被筛过，则为素数</span></span><br><span class="line">            prime[pNum++]=i;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;pNum&amp;&amp;i*prime[j]&lt;=n;j++)</span><br><span class="line">        &#123;</span><br><span class="line">            cout&lt;&lt;<span class="string">&quot;  j = &quot;</span>&lt;&lt;j&lt;&lt;<span class="string">&quot; prime[&quot;</span>&lt;&lt;j&lt;&lt;<span class="string">&quot;]&quot;</span>&lt;&lt;<span class="string">&quot; = &quot;</span>&lt;&lt;prime[j]&lt;&lt;<span class="string">&quot; i*prime[j] = &quot;</span>&lt;&lt;i*prime[j]&lt;&lt;endl;</span><br><span class="line">            p[i*prime[j]]=<span class="literal">true</span>;<span class="comment">//将已经记录的素数的倍数进行标记</span></span><br><span class="line">            <span class="keyword">if</span>(i%prime[j]==<span class="number">0</span>)<span class="comment">//关键步骤</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之所以被称为线性筛，不是没原因的——因为<strong>它的时间复杂度为<span class="math inline">\(\large{O(n)}\)</span></strong> ！！！它正好解决了上面埃及筛的“多余操作问题”，每个非素数只筛一次！！<strong>其核心思想是把一个合数拆成一个数乘它最小的质因子</strong>。这究竟是如何实现的呢？我们一句句来分析。</p>
+<p>第一句值得注意的，是<code>if(!p[i])prime[pNum++]=i;</code>。和埃及筛不同，它不是只用素数筛，<strong>合数也可以用来筛</strong>，所以不会跳出，但如果是<strong>素数一定要记录</strong>，这和埃及筛不同。下一句是内层for循环。循环条件为<code>j&lt;=pNum&amp;&amp;i* prime[j]&lt;=maxn</code>,从下文看，<strong><code>j</code> 就是代表遍历整个素数数组的下标</strong>，所以第一句很好理解，而第二句则是避免越界。</p>
+<p>关键就在于最后一个<code>if</code>语句。为什么<code>i</code>能整除第<code>j</code>个素数时就要跳出循环？这肯定是<strong>针对<code>i</code>是合数的情况</strong>的。各位想一下，如果<code>i</code>是个合数，比如<span class="math inline">\(9\)</span>，第一次循环<code>prime[j]=2</code>，筛掉<span class="math inline">\(18\)</span>；第二次循环，<code>prime [j] =3</code>，筛掉<span class="math inline">\(27\)</span>，然后被终止了；如果有第三次，<code>prime [j] =5</code>，筛掉<span class="math inline">\(45\)</span>。注意！<span class="math inline">\(45\)</span>最小的质因子是<span class="math inline">\(3\)</span>，不是<span class="math inline">\(5\)</span>，违背了核</p>
+<p>心思想，<strong>会导致重复</strong>。那为什么这句不符合就说明下一个数一定有更小的质因子呢？先假设素数<span class="math inline">\(p\)</span>是一个合数（即 <span class="math inline">\(i \times p\)</span> ）的最小质因子，且此时满足<code>if</code>语句中的条件，则<span class="math inline">\(m\)</span>乘<span class="math inline">\(x^2\)</span>为此合数。下一个素数我们虽然不知道是几，但一定比<span class="math inline">\(p\)</span>大，那下一个合数就是<span class="math inline">\(m \times x \times 下一个素数\)</span>,<strong><span class="math inline">\(x\)</span>肯定是这个合数的更小的质因子</strong>。</p>
+<p>时间复杂度：<span class="math inline">\(O(n)\)</span></p>
+<p>空间复杂度：<span class="math inline">\(O(n)\)</span></p>
+<h1 id="特大素数的判定">特大素数的判定</h1>
+<p>各位注意啦！如果你要判断的素数大到了天文数字，试除法难以运用，那么要好好学习此节！</p>
+<p>听说过费马小定律吗？我们现在要用到的就是这一段：</p>
+<p><span class="math display">\[
+\forall a \in \mathbb{N^+},p \in \mathbb{P},(a,p)=1,\\
+a^{p-1}\equiv1\pmod{p}
+\]</span></p>
+<p>其中p是一个素数，翻译成人话是：<strong>假如p是质数，且a,p互质，那么 a的(p-1)次方除以p的余数恒等于1</strong>。证明见<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/87611586">知乎</a>。当然，我们不用把所有和要求的数互质的数全试一遍，只要<strong>随机试几次</strong>即可，据验证正确率极高。但要注意的是，这里用的是费马小定律的反定律，是<strong>不完全的</strong>，有疏忽。这些可以逃过检测的数被称为<strong>卡迈克尔数（Carmichael Number）</strong>，最小的卡迈克尔数为<span class="math inline">\(561\)</span>。为了提高正确率，我们要引入<strong>二次探测定理</strong>：</p>
+<p><span class="math display">\[
+\forall x \in \mathbb{N^+},p \in \mathbb{P},x&lt;p,\\x^2 \equiv 1 \pmod{p}
+\]</span></p>
+<p>此方程<strong>有且仅有两个解</strong>：<span class="math inline">\(x_1=1,x_2=p-1\)</span>。证明如下： <span class="math display">\[
+x^2 \equiv 1 \pmod{p}\\
+x^2-1 \equiv 0 \pmod{p}\\
+(x+1)(x-1)\equiv 0 \pmod{p}\\
+p | (x+1)(x-1)\\
+\because p\in P\\
+\therefore (x+1)(x-1)=0或p(p-2)\\
+\therefore x_1=1,x_2=p-1
+\]</span></p>
+<p>也就是说，在费马小定律之后，再用二次探测定律，随机生成多个x，进行试验，<strong>如果发现在上面两个解之外还有解，即可判断它是合数</strong>。一般要试8次才可以保证正确。代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">long</span> <span class="type">long</span> <span class="title">gcd</span><span class="params">(<span class="type">long</span> <span class="type">long</span> a,<span class="type">long</span> <span class="type">long</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(b==<span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> a;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">gcd</span>(b,a%b);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">long</span> <span class="type">long</span> <span class="title">fast_pow</span><span class="params">(<span class="type">long</span> <span class="type">long</span> base,<span class="type">long</span> <span class="type">long</span> index,<span class="type">long</span> <span class="type">long</span> mod)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">long</span> <span class="type">long</span> ans=<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(index)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(index&amp;<span class="number">1</span>)</span><br><span class="line">			ans=(ans*base)%mod;</span><br><span class="line">		base=(base*base)%mod;</span><br><span class="line">		index&gt;&gt;=<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">prime</span><span class="params">(<span class="type">long</span> <span class="type">long</span> a)</span><span class="comment">//用费马小定律判断素数。 </span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> r,t=<span class="number">30</span>;</span><br><span class="line">	<span class="type">long</span> <span class="type">long</span> ans;</span><br><span class="line">	<span class="built_in">srand</span>(<span class="built_in">time</span>(<span class="literal">NULL</span>));</span><br><span class="line">	<span class="keyword">while</span>(t--)<span class="comment">//30组测试数据 </span></span><br><span class="line">	&#123;</span><br><span class="line">		r=<span class="built_in">rand</span>();</span><br><span class="line">		<span class="keyword">if</span>(r%a==<span class="number">0</span>)<span class="comment">//注意这里！！！</span></span><br><span class="line">		&#123;</span><br><span class="line">			t++;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(<span class="built_in">gcd</span>(r,a)!=<span class="number">1</span>)<span class="comment">//非互质，不是素数 </span></span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">		ans=<span class="built_in">fast_pow</span>(r,a<span class="number">-1</span>,a);</span><br><span class="line">		<span class="keyword">if</span>(ans!=<span class="number">1</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	t=<span class="number">30</span>;</span><br><span class="line">	<span class="keyword">while</span>(t--)<span class="comment">//二次探测定律</span></span><br><span class="line">	&#123;</span><br><span class="line">		r=<span class="built_in">rand</span>()*<span class="built_in">rand</span>()%a;</span><br><span class="line">		r++;</span><br><span class="line">		<span class="keyword">if</span>(r==a<span class="number">-1</span>||r==<span class="number">1</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			t++;</span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		ans=<span class="built_in">fast_pow</span>(r,<span class="number">2</span>,a);</span><br><span class="line">		<span class="keyword">if</span>(ans==<span class="number">1</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实我在代码里加入了一个小小的优化：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="built_in">gcd</span>(r,a)!=<span class="number">1</span>)<span class="comment">//非互质，不是素数 </span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br></pre></td></tr></table></figure>
+<p>这让运行速度飞一样地提升。</p>
+<p>但是要注意，这样的话，前面的if语句会出现bug，所以<strong>需要修改</strong>！！！</p>
+<hr />
+<p>肝文不易，求点赞、关注加上机^_^。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag"># 数学</a>
+              <a href="/tags/%E7%AD%9B%E6%B3%95/" rel="tag"># 筛法</a>
+              <a href="/tags/%E7%B4%A0%E6%95%B0/" rel="tag"># 素数</a>
+              <a href="/tags/%E6%A6%82%E7%8E%87%E7%AE%97%E6%B3%95/" rel="tag"># 概率算法</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/1970/01/01/hello-world/" rel="prev" title="Hello World">
+                  <i class="fa fa-chevron-left"></i> Hello World
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">企鹅君</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
